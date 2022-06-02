@@ -70,14 +70,14 @@ const displayMovements=function(movements){
     const html =`
       <div class="movements__row">
       <div class="movements__type movements__type--${type}">${i+1} ${type}</div>
-      <div class="movements__value">${mov}$</div>
+      <div class="movements__value">$${mov}</div>
       </div>
     `;
     containerMovements.insertAdjacentHTML('afterbegin',html)
   });
 };
 
-displayMovements(account2.movements);
+
 
 //show account balance:
 const displayBalance =function(movement){
@@ -85,7 +85,7 @@ const displayBalance =function(movement){
 labelBalance.textContent=`\$${movement.reduce((acc,mov)=> acc+mov,0)}`;
 }
 
-displayBalance(account1.movements);
+
 //create user name initial
 const createUsername = function(accts){
   accts.forEach(acct=>{
@@ -94,6 +94,43 @@ const createUsername = function(accts){
 }
 
 createUsername(accounts);
+
+//show bank movements summary
+const displaySummary =function(acct){
+ const sumIn= acct.movements.filter(mov=>mov>0).reduce((acc,mov)=>acc+mov,0);
+ labelSumIn.textContent=`\$${sumIn}`;
+
+ const sumOut=acct.movements.filter(mov=>mov<0).reduce((acc,mov)=>acc+mov,0);
+ labelSumOut.textContent=`\$${Math.abs(sumOut)}`;
+
+ const interest =acct.movements
+ .filter(mov=>mov>0)
+ .map(deposit=>deposit*acct.interestRate/100)
+ .filter(int=>int>1)
+ .reduce((acc,int)=>acc+int,0);
+labelSumInterest.textContent=`\$${interest}`;
+}
+
+
+//the login function
+let currentAccount;
+btnLogin.addEventListener('click',e=>{
+  e.preventDefault();
+  currentAccount=accounts.find(acc=>acc.username===inputLoginUsername.value);
+  
+  if(currentAccount?.pin===Number(inputLoginPin.value)){
+    labelWelcome.textContent=`Welcome back, ${currentAccount.owner.split(' ')[0]}!`;
+    containerApp.style.opacity =100;
+    inputLoginUsername.value= inputLoginPin.value="";
+    //the pin input will lose it's focus
+    inputLoginPin.blur();
+
+    displayMovements(currentAccount.movements);
+    displayBalance(currentAccount.movements);
+    displaySummary(currentAccount);
+  }
+  
+})
 
 // Coding Challenge #1
 
@@ -126,3 +163,45 @@ GOOD LUCK 😀
 // }
 
 // checkDogs([3, 5, 2, 12, 7],[4, 1, 15, 8, 3]);
+
+// Coding Challenge #2
+
+/* 
+Let's go back to Julia and Kate's study about dogs. This time, they want to convert dog ages to human ages and calculate the average age of the dogs in their study.
+
+Create a function 'calcAverageHumanAge', which accepts an arrays of dog's ages ('ages'), and does the following things in order:
+
+1. Calculate the dog age in human years using the following formula: if the dog is <= 2 years old, humanAge = 2 * dogAge. If the dog is > 2 years old, humanAge = 16 + dogAge * 4.
+2. Exclude all dogs that are less than 18 human years old (which is the same as keeping dogs that are at least 18 years old)
+3. Calculate the average human age of all adult dogs (you should already know from other challenges how we calculate averages 😉)
+4. Run the function for both test datasets
+
+TEST DATA 1: [5, 2, 4, 1, 15, 8, 3]
+TEST DATA 2: [16, 6, 10, 5, 6, 1, 4]
+
+GOOD LUCK 😀
+*/
+
+// const calcAverageHumanAge=function(ages){
+//   const humanAge = ages.map(age=> (age <=2) ? age * 2 :(age * 4 + 16));
+//   const adultDogs = humanAge.filter(age=>age >= 18);
+//   console.log(adultDogs, humanAge);
+//   //const aveAge = adultDogs.reduce((acc,age)=> (acc+age),0)/adultDogs.length;
+// //another way
+// const aveAge =adultDogs.reduce((acc,age,i,arr)=>acc+age/arr.length,0);
+
+//   console.log(aveAge);
+// }
+
+// calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+
+// Coding Challenge #3
+// const calcAverageHumanAge=function(ages){
+//   const avehumanAge=ages
+//   .map(age=>age<=2 ? age*2 :age*4+16 )
+//   .filter(age=>age>=18)
+//   .reduce((acc,age,i,arr)=>acc+age/arr.length,0);
+//   console.log(avehumanAge)
+// }
+
+// calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
