@@ -80,9 +80,10 @@ const displayMovements=function(movements){
 
 
 //show account balance:
-const displayBalance =function(movement){
+const displayBalance =function(acct){
 //movements: [200, 450, -400, 3000, -650, -130, 70, 1300]
-labelBalance.textContent=`\$${movement.reduce((acc,mov)=> acc+mov,0)}`;
+acct.balance=acct.movements.reduce((acc,mov)=> acc+mov,0);
+labelBalance.textContent=`\$${acct.balance}`;
 }
 
 
@@ -111,26 +112,49 @@ const displaySummary =function(acct){
 labelSumInterest.textContent=`\$${interest}`;
 }
 
+//function display account UI
+const displayAccountUI =function(acct){
+  displayMovements(acct.movements);
+  displayBalance(acct);
+  displaySummary(acct);
+}
 
 //the login function
 let currentAccount;
 btnLogin.addEventListener('click',e=>{
   e.preventDefault();
   currentAccount=accounts.find(acc=>acc.username===inputLoginUsername.value);
-  
+
   if(currentAccount?.pin===Number(inputLoginPin.value)){
     labelWelcome.textContent=`Welcome back, ${currentAccount.owner.split(' ')[0]}!`;
     containerApp.style.opacity =100;
     inputLoginUsername.value= inputLoginPin.value="";
     //the pin input will lose it's focus
     inputLoginPin.blur();
-
-    displayMovements(currentAccount.movements);
-    displayBalance(currentAccount.movements);
-    displaySummary(currentAccount);
-  }
-  
+    displayAccountUI(currentAccount);
+    
+  }  
 })
+
+//transfer function
+btnTransfer.addEventListener('click',e=>{
+  e.preventDefault();
+  const receiver = inputTransferTo.value;
+  const amount=Number(inputTransferAmount.value);
+
+  const rAcct =accounts.find(acc=>acc.username===receiver);
+  inputTransferAmount.value =inputTransferTo.value="";
+  
+  if(rAcct && receiver!==currentAccount.username && currentAccount.balance>=amount && amount >0){
+    console.log('valid transfer')
+    currentAccount.movements.push(-amount);
+    rAcct.movements.push(amount);
+    displayAccountUI(currentAccount);
+
+  }else {console.log("invalid")}
+
+})
+
 
 // Coding Challenge #1
 
