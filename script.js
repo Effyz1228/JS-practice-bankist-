@@ -144,7 +144,7 @@ btnTransfer.addEventListener('click',e=>{
 
   const rAcct =accounts.find(acc=>acc.username===receiver);
   inputTransferAmount.value =inputTransferTo.value="";
-  
+
   if(rAcct && receiver!==currentAccount.username && currentAccount.balance>=amount && amount >0){
     console.log('valid transfer')
     currentAccount.movements.push(-amount);
@@ -152,7 +152,21 @@ btnTransfer.addEventListener('click',e=>{
     displayAccountUI(currentAccount);
 
   }else {console.log("invalid")}
+})
 
+//close account
+btnClose.addEventListener('click',e=>{
+  e.preventDefault();
+ let inputUser =inputCloseUsername.value;
+ let inputPin = Number(inputClosePin.value);
+
+ if(inputUser===currentAccount.username && inputPin===currentAccount.pin){
+ const index= accounts.findIndex(acct=>acct.username === inputUser);
+ accounts.splice(index,1);
+ containerApp.style.opacity =0;
+ }
+ inputCloseUsername.value="";
+ inputClosePin.value="";
 })
 
 
