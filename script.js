@@ -200,6 +200,19 @@ btnSort.addEventListener('click',e=>{
 // const allMovement =accounts.flatMap(acct=>acct.movements).reduce((acc,mov)=>acc+mov,0);
 // console.log(allMovement);
 
+//creating arrays
+const randomDice = Array.from({length:100}, ()=> Math.floor(Math.random()*6+1));
+console.log(randomDice);
+
+
+//practice Array.from
+const logo =document.querySelector('.logo');
+logo.addEventListener('click',()=>{
+  const movementsUI=Array.from(document.querySelectorAll('.movements__value'),el=>Number(el.textContent.replace('$',''))).reduce((acc,mov)=>acc+mov,0);
+  console.log(movementsUI);
+})
+
+
 // Coding Challenge #1
 
 /* 
