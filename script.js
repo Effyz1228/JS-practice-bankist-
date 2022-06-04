@@ -62,15 +62,19 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 
-const displayMovements=function(movements){
+const displayMovements=function(movements,sort=false){
   containerMovements.innerHTML="";
-  movements.forEach((mov,i)=>{
-    const type =mov > 0 ? 'deposit':'withdrawal';
+
+  //sort will mutate the array so use slice to make a shallow copy!
+  const mov =sort ? movements.slice().sort((a,b)=>a-b):movements;
+
+  mov.forEach((m,i)=>{
+    const type =m > 0 ? 'deposit':'withdrawal';
   
     const html =`
       <div class="movements__row">
       <div class="movements__type movements__type--${type}">${i+1} ${type}</div>
-      <div class="movements__value">$${mov}</div>
+      <div class="movements__value">$${m}</div>
       </div>
     `;
     containerMovements.insertAdjacentHTML('afterbegin',html)
@@ -183,6 +187,18 @@ btnClose.addEventListener('click',e=>{
  inputClosePin.value="";
 })
 
+//sort movements function
+
+let isSorted = false;
+btnSort.addEventListener('click',e=>{
+  e.preventDefault();
+  displayMovements(currentAccount.movements,!isSorted);
+  isSorted =!isSorted;
+})
+
+//flatmap lecture
+// const allMovement =accounts.flatMap(acct=>acct.movements).reduce((acc,mov)=>acc+mov,0);
+// console.log(allMovement);
 
 // Coding Challenge #1
 
